@@ -8,7 +8,7 @@ import smtplib
 import time
 import yaml
 
-pathToYaml = "/Users/joshcooper/iit_housing_portal/loginDetails.yml"
+pathToYaml = "/Users/joshcooper/iit_auto_login/loginDetails.yml"
 conf = yaml.full_load(open(pathToYaml))
 # iit creds
 iit_username = conf["iit_login"]["username"]
