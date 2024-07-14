@@ -7,7 +7,7 @@ import smtplib
 import time
 import yaml
 
-pathToYaml = "/Users/joshcooper/iit_auto_login/loginDetails.yml"
+pathToYaml = "/home/jcoop/iit_auto_login/loginDetails.yml"
 conf = yaml.full_load(open(pathToYaml))
 # iit creds
 iit_username = conf["iit_login"]["username"]
@@ -24,7 +24,7 @@ password = conf["bot_email"]["password"]
 image_path = "./rooms.png"
 
 
-service = Service(executable_path="/Users/joshcooper/iit_housing_portal/chromedriver")
+service = Service(executable_path="/home/jcoop/iit_auto_login/chromedriver")
 options = Options()
 options.add_argument("--headless")
 
