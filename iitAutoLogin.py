@@ -1,7 +1,10 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
+
+# from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.options import Options
+
+# from selenium.webdriver.chrome.options import Options
 from email.message import EmailMessage
 import smtplib
 import time
@@ -16,19 +19,22 @@ iit_security_question = conf["iit_login"]["sec_ques"]
 # email creds
 sender_email = conf["bot_email"]["email"]
 receiver_email = "jcoopbbb@gmail.com"
-subject = "New Room available check quickly!"
+subject1 = "New Room available check quickly!"
+subject2 = "Update on rooms"
 smtp_server = "smtp-mail.outlook.com"
 smtp_port = 587  # Use 465 if using SSL
 username = conf["bot_email"]["email"]
 password = conf["bot_email"]["password"]
 image_path = "./rooms.png"
+update_image_path = "./updateOfRooms.png"
 
 
-service = Service(executable_path="/Users/joshcooper/iit_housing_portal/chromedriver")
+# service = Service(executable_path="/Users/joshcooper/iit_housing_portal/chromedriver")
 options = Options()
 options.add_argument("--headless")
 
 driver = webdriver.Firefox(options=options)
+# driver = webdriver.Chrome(options=options)
 # driver = webdriver.Firefox()
 
 max_time = 1000
@@ -92,6 +98,12 @@ def goToRoomSelecionPage(driver, limit):
             time.sleep(1)
             sendRoomNotification()
             print("sent email alert")
+        if x % 100 == 0:
+            driver.save_full_page_screenshot("updateOfRooms.png")
+            print("getting a screenshot for update...")
+            time.sleep(1)
+            sendUpdateNotification()
+            print("sent update email")
         print("refreshing...")
         driver.refresh()
         print("refreshed")
@@ -104,10 +116,30 @@ def sendRoomNotification():
     email_message = EmailMessage()
     email_message["From"] = sender_email
     email_message["To"] = receiver_email
-    email_message["Subject"] = subject
+    email_message["Subject"] = subject1
     # Attach the message body
     # add image to email
     with open(image_path, "rb") as img:
+        img_data = img.read()
+    email_message.add_attachment(img_data, maintype="image", subtype="png")
+    # Connect to the SMTP server
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        # Log in to the email account
+        server.starttls()  # Use if your server requires a secure connection
+        server.login(username, password)
+        # Send the email
+        server.sendmail(sender_email, receiver_email, email_message.as_string())
+
+
+def sendUpdateNotification():
+    # Create the email message
+    email_message = EmailMessage()
+    email_message["From"] = sender_email
+    email_message["To"] = receiver_email
+    email_message["Subject"] = subject2
+    # Attach the message body
+    # add image to email
+    with open(update_image_path, "rb") as img:
         img_data = img.read()
     email_message.add_attachment(img_data, maintype="image", subtype="png")
     # Connect to the SMTP server
